@@ -6,6 +6,8 @@
 
 ![Logo](https://raw.githubusercontent.com/manny0808/Heizungs-pull/main/logo.png)
 
+*Dark Mode Logo - Optimized for modern interfaces*
+
 ## Features
 - **Dynamic detection** of all actors and temperatures from data.php
 - **No static configuration** - automatically adapts to your data.php

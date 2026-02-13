@@ -6,6 +6,8 @@
 
 ![Logo](https://raw.githubusercontent.com/manny0808/Heizungs-pull/main/logo.png)
 
+*Dark Mode Logo - Optimized for modern interfaces*
+
 A dynamic Home Assistant integration that automatically discovers all sensors and actors from a Siemens Logo PLC with Logo monitoring software's `data.php` interface. No configuration needed - just point it to your `data.php` URL!
 
 ## ✨ Features
