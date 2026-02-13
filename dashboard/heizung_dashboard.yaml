@@ -1,0 +1,183 @@
+# Heizungs Dashboard - Complete Example
+# Copy this into a new Lovelace dashboard tab
+
+views:
+  - title: Heizung
+    icon: mdi:radiator
+    path: heizung
+    cards:
+      # Header
+      - type: markdown
+        content: |
+          # 🔥 Heizungs Monitoring
+          **Integration:** Heizungs Pull  
+          **Letztes Update:** {{ states('sensor.heizungs_pull_last_update') }}
+        theme: default
+
+      # Status Overview
+      - type: vertical-stack
+        cards:
+          - type: glance
+            title: Heizungs Status
+            columns: 4
+            entities:
+              - entity: binary_sensor.heizung_parterre
+                name: Parterre
+                icon: mdi:radiator
+              - entity: binary_sensor.heizung_keller
+                name: Keller
+                icon: mdi:home-floor-basement
+              - entity: binary_sensor.heizung_dachwohnung
+                name: Dachwohnung
+                icon: mdi:home-roof
+              - entity: binary_sensor.pumpe_holzkessel
+                name: Holzkessel
+                icon: mdi:pump
+
+      # Temperature Cards
+      - type: horizontal-stack
+        cards:
+          - type: gauge
+            entity: sensor.temp_kessel
+            name: Kessel
+            min: 0
+            max: 100
+            severity:
+              green: 0
+              yellow: 60
+              red: 80
+            needle: true
+          - type: gauge
+            entity: sensor.temp_vorlauf
+            name: Vorlauf
+            min: 0
+            max: 80
+            severity:
+              green: 0
+              yellow: 40
+              red: 60
+            needle: true
+          - type: gauge
+            entity: sensor.temp_ruecklauf
+            name: Rücklauf
+            min: 0
+            max: 60
+            severity:
+              green: 0
+              yellow: 30
+              red: 50
+            needle: true
+
+      # Temperature History
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: Temperaturen Verlauf (24h)
+            hours_to_show: 24
+            refresh_interval: 300
+            entities:
+              - entity: sensor.temp_kessel
+                name: Kessel
+                color: firebrick
+              - entity: sensor.temp_vorlauf
+                name: Vorlauf
+                color: steelblue
+              - entity: sensor.temp_ruecklauf
+                name: Rücklauf
+                color: forestgreen
+              - entity: sensor.temp_aussen
+                name: Außen
+                color: gray
+
+      # All Temperatures Table
+      - type: entities
+        title: Alle Temperaturen
+        show_header_toggle: false
+        entities:
+          - entity: sensor.temp_aussen
+            name: Außen
+            icon: mdi:thermometer
+          - entity: sensor.temp_kessel
+            name: Kessel
+            icon: mdi:fire
+          - entity: sensor.temp_vorlauf
+            name: Vorlauf
+            icon: mdi:pipe
+          - entity: sensor.temp_ruecklauf
+            name: Rücklauf
+            icon: mdi:pipe-wrench
+          - entity: sensor.temp_puffer_oben
+            name: Puffer Oben
+            icon: mdi:water-thermometer
+          - entity: sensor.temp_puffer_unten
+            name: Puffer Unten
+            icon: mdi:water-thermometer
+          - entity: sensor.temp_boiler_oben
+            name: Boiler Oben
+            icon: mdi:water-boiler
+          - entity: sensor.temp_boiler_unten
+            name: Boiler Unten
+            icon: mdi:water-boiler
+
+      # Statistics
+      - type: statistics-graph
+        title: Wochen-Statistik
+        entities:
+          - sensor.temp_kessel
+          - sensor.temp_aussen
+        period:
+          calendar:
+            period: day
+            offset: -7
+        stat_types:
+          - mean
+          - min
+          - max
+        chart_type: line
+
+      # Automation Suggestions
+      - type: markdown
+        content: |
+          ## 💡 Automatisierungs-Ideen
+          
+          **Temperatur-Alarme:**
+          ```yaml
+          automation:
+            - alias: "Kessel zu heiß"
+              trigger:
+                platform: numeric_state
+                entity_id: sensor.temp_kessel
+                above: 85
+              action:
+                service: notify.mobile_app
+                data:
+                  message: "⚠️ Kessel zu heiß: {{ states('sensor.temp_kessel') }}°C"
+          
+            - alias: "Außentemperatur gefallen"
+              trigger:
+                platform: numeric_state
+                entity_id: sensor.temp_aussen
+                below: 5
+              action:
+                service: climate.set_temperature
+                entity_id: climate.wohnzimmer
+                data:
+                  temperature: 21
+          ```
+          
+          **Heizungs-Logik:**
+          ```yaml
+          automation:
+            - alias: "Heizung bei Kessel-Temperatur einschalten"
+              trigger:
+                platform: numeric_state
+                entity_id: sensor.temp_kessel
+                above: 60
+              condition:
+                condition: numeric_state
+                entity_id: sensor.temp_aussen
+                below: 15
+              action:
+                service: homeassistant.turn_on
+                entity_id: binary_sensor.heizung_parterre
+          ```
