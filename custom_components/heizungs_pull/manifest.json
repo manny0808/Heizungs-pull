@@ -1,0 +1,12 @@
+{
+  "domain": "heizungs_pull",
+  "name": "Heizungs Pull",
+  "documentation": "https://github.com/manny0808/Heizungs-pull",
+  "issue_tracker": "https://github.com/manny0808/Heizungs-pull/issues",
+  "codeowners": ["@manny0808"],
+  "requirements": ["aiohttp>=3.8.0"],
+  "dependencies": [],
+  "version": "1.0.0",
+  "config_flow": true,
+  "iot_class": "local_polling"
+}
