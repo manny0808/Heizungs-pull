@@ -4,6 +4,8 @@
 
 **Home Assistant integration for Siemens Logo SPS with Logo monitoring Software with data.php as source.**
 
+![Logo](https://raw.githubusercontent.com/manny0808/Heizungs-pull/main/logo.png)
+
 ## Features
 - **Dynamic detection** of all actors and temperatures from data.php
 - **No static configuration** - automatically adapts to your data.php

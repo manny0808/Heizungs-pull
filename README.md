@@ -4,6 +4,8 @@
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 
+![Logo](https://raw.githubusercontent.com/manny0808/Heizungs-pull/main/logo.png)
+
 A dynamic Home Assistant integration that automatically discovers all sensors and actors from a Siemens Logo PLC with Logo monitoring software's `data.php` interface. No configuration needed - just point it to your `data.php` URL!
 
 ## ✨ Features
