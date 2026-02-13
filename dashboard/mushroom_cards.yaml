@@ -17,7 +17,7 @@ views:
           - type: custom:mushroom-chips-card
             chips:
               - type: entity
-                entity: binary_sensor.heizung_parterre
+                entity: sensor.heizung_parterre
                 icon: mdi:radiator
                 content: Parterre
                 icon_color: |
@@ -26,7 +26,7 @@ views:
                     return 'gray';
                   ]]]
               - type: entity
-                entity: binary_sensor.heizung_keller
+                entity: sensor.heizung_keller
                 icon: mdi:home-floor-basement
                 content: Keller
                 icon_color: |
@@ -35,7 +35,7 @@ views:
                     return 'gray';
                   ]]]
               - type: entity
-                entity: binary_sensor.heizung_dachwohnung
+                entity: sensor.heizung_dachwohnung
                 icon: mdi:home-roof
                 content: Dachwohnung
                 icon_color: |
@@ -44,12 +44,12 @@ views:
                     return 'gray';
                   ]]]
               - type: entity
-                entity: binary_sensor.pumpe_holzkessel
+                entity: sensor.pumpe_holzkessel
                 icon: mdi:pump
                 content: Holzkessel
                 icon_color: |
                   [[[
-                    if (entity.state === 'on') return 'green';
+                    if (entity.state === 'on') return 'orange';
                     return 'gray';
                   ]]]
 
@@ -138,59 +138,49 @@ views:
               func: avg
               duration: 5min
 
-      # Control Buttons
-      - type: custom:mushroom-title-card
-        title: Steuerung
-        subtitle: Manuelle Eingriffe
-      - type: grid
-        columns: 2
-        cards:
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.heizung_parterre
-            name: Parterre
-            icon: mdi:radiator
-            layout: vertical
-            fill_container: true
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.heizung_keller
-            name: Keller
-            icon: mdi:home-floor-basement
-            layout: vertical
-            fill_container: true
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.heizung_dachwohnung
-            name: Dachwohnung
-            icon: mdi:home-roof
-            layout: vertical
-            fill_container: true
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.pumpe_holzkessel
-            name: Holzkessel
-            icon: mdi:pump
-            layout: vertical
-            fill_container: true
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
-
-      # Info Card
+      # All Sensors Table
       - type: custom:mushroom-entity-card
-        entity: sensor.heizungs_pull_last_update
-        name: Letztes Update
-        icon: mdi:update
+        entity: sensor.heizung_parterre
+        name: Heizung Parterre
+        icon: mdi:radiator
         layout: horizontal
         fill_container: true
-        secondary_info: last-updated
+        secondary_info: last-changed
+      - type: custom:mushroom-entity-card
+        entity: sensor.heizung_keller
+        name: Heizung Keller
+        icon: mdi:home-floor-basement
+        layout: horizontal
+        fill_container: true
+        secondary_info: last-changed
+      - type: custom:mushroom-entity-card
+        entity: sensor.heizung_dachwohnung
+        name: Heizung Dachwohnung
+        icon: mdi:home-roof
+        layout: horizontal
+        fill_container: true
+        secondary_info: last-changed
+      - type: custom:mushroom-entity-card
+        entity: sensor.pumpe_heizung
+        name: Pumpe Heizung
+        icon: mdi:pump
+        layout: horizontal
+        fill_container: true
+        secondary_info: last-changed
+      - type: custom:mushroom-entity-card
+        entity: sensor.pumpe_holzkessel
+        name: Pumpe Holzkessel
+        icon: mdi:pump
+        layout: horizontal
+        fill_container: true
+        secondary_info: last-changed
+
+      # Footer
+      - type: custom:mushroom-template-card
+        primary: Letztes Update
+        secondary: "{{ states('sensor.heizungs_pull_last_update') }}"
+        icon: mdi:clock-outline
+        icon_color: gray
+        entity: sensor.heizungs_pull_last_update
+        layout: horizontal
+        fill_container: true

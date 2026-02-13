@@ -2,7 +2,7 @@
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 
-**Generic integration for Siemens heating controllers with data.php interface.**
+**Home Assistant integration for Siemens Logo SPS with Logo monitoring Software with data.php as source.**
 
 ## Features
 - **Dynamic detection** of all actors and temperatures from data.php

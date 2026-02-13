@@ -1,6 +1,6 @@
 # Heizungs Pull - Home Assistant Integration
 
-**Generic Home Assistant integration for Siemens heating controllers with data.php interface.**
+**Home Assistant integration for Siemens Logo SPS with Logo monitoring Software with data.php as source.**
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 
@@ -56,7 +56,7 @@ Pumpe Holzkessel@-1@
 
 ### Entity naming
 - Temperatures: `sensor.temperature_{name_lowercase}` (e.g., `sensor.temperature_kessel`)
-- Binary sensors: `binary_sensor.{name_lowercase_with_underscores}` (e.g., `binary_sensor.heizung_parterre`)
+- Actor status: `sensor.{name_lowercase_with_underscores}` (e.g., `sensor.heizung_parterre`)
 
 ## Dashboard Templates
 
@@ -82,11 +82,11 @@ cards:
   - type: glance
     title: Heizungs Status
     entities:
-      - entity: binary_sensor.heizung_parterre
+      - entity: sensor.heizung_parterre
         name: Parterre
-      - entity: binary_sensor.heizung_keller
+      - entity: sensor.heizung_keller
         name: Keller
-      - entity: binary_sensor.heizung_dachwohnung
+      - entity: sensor.heizung_dachwohnung
         name: Dachwohnung
   - type: entities
     title: Temperaturen
@@ -129,7 +129,7 @@ automation:
       below: 15
     action:
       service: homeassistant.turn_on
-      entity_id: binary_sensor.heizung_parterre
+      entity_id: sensor.heizung_parterre
 ```
 
 ## For Developers

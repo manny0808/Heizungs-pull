@@ -21,19 +21,19 @@ views:
             title: Heizungs Status
             columns: 5
             entities:
-              - entity: binary_sensor.heizung_parterre
+              - entity: sensor.heizung_parterre
                 name: Parterre
                 icon: mdi:radiator
-              - entity: binary_sensor.heizung_keller
+              - entity: sensor.heizung_keller
                 name: Keller
                 icon: mdi:home-floor-basement
-              - entity: binary_sensor.heizung_dachwohnung
+              - entity: sensor.heizung_dachwohnung
                 name: Dachwohnung
                 icon: mdi:home-roof
-              - entity: binary_sensor.pumpe_heizung
+              - entity: sensor.pumpe_heizung
                 name: Heizung
                 icon: mdi:pump
-              - entity: binary_sensor.pumpe_holzkessel
+              - entity: sensor.pumpe_holzkessel
                 name: Holzkessel
                 icon: mdi:pump
 
@@ -173,5 +173,5 @@ views:
                 below: 15
               action:
                 service: homeassistant.turn_on
-                entity_id: binary_sensor.heizung_parterre
+                entity_id: sensor.heizung_parterre
           ```
