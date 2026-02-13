@@ -7,7 +7,8 @@ DEFAULT_SCAN_INTERVAL = 120  # seconds
 CONF_URL = "url"
 CONF_SCAN_INTERVAL = "scan_interval"
 
-# Actor names (as they appear in data.php)
+# Actor names (as they appear in data.php) - kept for backward compatibility
+# In dynamic mode, all actors from data.php are automatically detected
 ACTOR_NAMES = [
     "Mischer offen",
     "Mischer zu",

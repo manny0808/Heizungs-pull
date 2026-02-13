@@ -70,18 +70,15 @@ def filter_known_actors(parsed_data: Dict[str, Any], known_actors: list) -> Dict
     
     Args:
         parsed_data: Parsed data from parse_heizung_data
-        known_actors: List of known actor names
+        known_actors: List of known actor names (unused in dynamic mode)
         
     Returns:
-        Filtered data with only known actors
+        Filtered data with all actors (no filtering in dynamic mode)
     """
-    filtered_actors = {}
-    for actor_name, state in parsed_data.get("actors", {}).items():
-        if actor_name in known_actors:
-            filtered_actors[actor_name] = state
-    
+    # In dynamic mode, we return all actors
+    # known_actors parameter is kept for backward compatibility
     return {
-        "actors": filtered_actors,
+        "actors": parsed_data.get("actors", {}),
         "temperatures": parsed_data.get("temperatures", {}),
         "timestamp": parsed_data.get("timestamp")
     }

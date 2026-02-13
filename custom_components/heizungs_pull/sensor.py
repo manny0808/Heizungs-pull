@@ -30,15 +30,15 @@ async def async_setup_entry(
     
     entities = []
     
-    # Create binary sensors for actors
-    for actor_name in ACTOR_NAMES:
-        entities.append(HeizungsBinarySensor(coordinator, actor_name))
-    
-    # Create temperature sensors
-    # We'll create them dynamically based on available data
-    # First update to get available temperatures
+    # Create binary sensors for actors dynamically
+    # First update to get available actors
     await coordinator.async_config_entry_first_refresh()
     
+    if coordinator.data and "actors" in coordinator.data:
+        for actor_name in coordinator.data["actors"].keys():
+            entities.append(HeizungsBinarySensor(coordinator, actor_name))
+    
+    # Create temperature sensors dynamically
     if coordinator.data and "temperatures" in coordinator.data:
         for temp_name in coordinator.data["temperatures"].keys():
             entities.append(HeizungsTemperatureSensor(coordinator, temp_name))
