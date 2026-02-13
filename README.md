@@ -3,6 +3,10 @@
 **Home Assistant integration for Siemens Logo SPS with Logo monitoring Software with data.php as source.**
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
+![version_badge](https://img.shields.io/github/v/release/manny0808/Heizungs-pull)
+![downloads_badge](https://img.shields.io/github/downloads/manny0808/Heizungs-pull/total)
+![ha_version](https://img.shields.io/badge/Home%20Assistant-2024.1%2B-blue)
+![license](https://img.shields.io/github/license/manny0808/Heizungs-pull)
 
 ![Logo](https://raw.githubusercontent.com/manny0808/Heizungs-pull/main/logo.png)
 
