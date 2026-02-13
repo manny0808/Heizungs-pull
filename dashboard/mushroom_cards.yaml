@@ -57,8 +57,8 @@ views:
       - type: grid
         cards:
           - type: custom:mushroom-template-card
-            primary: Kessel
-            secondary: "{{ states('sensor.temperature_kessel') }}°C"
+            primary: Holzkessel
+            secondary: "{{ states('sensor.temperature_holzkessel') }}°C"
             icon: mdi:fire
             icon_color: |
               [[[
@@ -67,7 +67,7 @@ views:
                 if (temp > 60) return 'orange';
                 return 'green';
               ]]]
-            entity: sensor.temperature_kessel
+            entity: sensor.temperature_holzkessel
             layout: vertical
             fill_container: true
           - type: custom:mushroom-template-card
@@ -79,16 +79,16 @@ views:
             layout: vertical
             fill_container: true
           - type: custom:mushroom-template-card
-            primary: Rücklauf
-            secondary: "{{ states('sensor.temperature_ruecklauf') }}°C"
-            icon: mdi:arrow-down-bold
-            icon_color: green
-            entity: sensor.temperature_ruecklauf
+            primary: Boiler Mitte
+            secondary: "{{ states('sensor.temperature_boiler_mitte') }}°C"
+            icon: mdi:water-boiler
+            icon_color: orange
+            entity: sensor.temperature_boiler_mitte
             layout: vertical
             fill_container: true
           - type: custom:mushroom-template-card
             primary: Außen
-            secondary: "{{ states('sensor.temperature_aussen') }}°C"
+            secondary: "{{ states('sensor.temperature_ausen') }}°C"
             icon: mdi:thermometer
             icon_color: |
               [[[
@@ -97,7 +97,7 @@ views:
                 if (temp > 25) return 'red';
                 return 'gray';
               ]]]
-            entity: sensor.temperature_aussen
+            entity: sensor.temperature_ausen
             layout: vertical
             fill_container: true
 
@@ -113,8 +113,8 @@ views:
           stroke_width: 3
           opacity: 0.8
         series:
-          - entity: sensor.temperature_kessel
-            name: Kessel
+          - entity: sensor.temperature_holzkessel
+            name: Holzkessel
             color: '#ff6b00'
             type: line
             curve: smooth
@@ -129,9 +129,9 @@ views:
             group_by:
               func: avg
               duration: 5min
-          - entity: sensor.temperature_ruecklauf
-            name: Rücklauf
-            color: '#4caf50'
+          - entity: sensor.temperature_boiler_mitte
+            name: Boiler Mitte
+            color: '#ff9800'
             type: line
             curve: smooth
             group_by:

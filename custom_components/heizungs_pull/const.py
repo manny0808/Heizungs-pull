@@ -9,10 +9,19 @@ CONF_SCAN_INTERVAL = "scan_interval"
 
 # Actor names (as they appear in data.php)
 ACTOR_NAMES = [
+    "Mischer offen",
+    "Mischer zu",
+    "Mischer AUF",
+    "Mischer ZU",
+    "Pumpe Zirkulation",
     "Heizung Parterre",
     "Heizung Keller",
     "Heizung Dachwohnung",
-    "Pumpe Holzkessel"
+    "Pumpe Heizung",
+    "Pumpe Solarkolektor",
+    "Pumpe Holzkessel",
+    "Elektro HZ Mitte",
+    "Elekltro HZ Unten"
 ]
 
 # Temperature prefixes

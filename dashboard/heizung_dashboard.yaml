@@ -19,7 +19,7 @@ views:
         cards:
           - type: glance
             title: Heizungs Status
-            columns: 4
+            columns: 5
             entities:
               - entity: binary_sensor.heizung_parterre
                 name: Parterre
@@ -30,6 +30,9 @@ views:
               - entity: binary_sensor.heizung_dachwohnung
                 name: Dachwohnung
                 icon: mdi:home-roof
+              - entity: binary_sensor.pumpe_heizung
+                name: Heizung
+                icon: mdi:pump
               - entity: binary_sensor.pumpe_holzkessel
                 name: Holzkessel
                 icon: mdi:pump
@@ -38,8 +41,8 @@ views:
       - type: horizontal-stack
         cards:
           - type: gauge
-            entity: sensor.temperature_kessel
-            name: Kessel
+            entity: sensor.temperature_holzkessel
+            name: Holzkessel
             min: 0
             max: 100
             severity:
@@ -58,14 +61,14 @@ views:
               red: 60
             needle: true
           - type: gauge
-            entity: sensor.temperature_ruecklauf
-            name: Rücklauf
+            entity: sensor.temperature_boiler_mitte
+            name: Boiler Mitte
             min: 0
-            max: 60
+            max: 100
             severity:
               green: 0
-              yellow: 30
-              red: 50
+              yellow: 60
+              red: 80
             needle: true
 
       # Temperature History
@@ -76,16 +79,16 @@ views:
             hours_to_show: 24
             refresh_interval: 300
             entities:
-              - entity: sensor.temperature_kessel
-                name: Kessel
+              - entity: sensor.temperature_holzkessel
+                name: Holzkessel
                 color: firebrick
               - entity: sensor.temperature_vorlauf
                 name: Vorlauf
                 color: steelblue
-              - entity: sensor.temperature_ruecklauf
-                name: Rücklauf
-                color: forestgreen
-              - entity: sensor.temperature_aussen
+              - entity: sensor.temperature_boiler_mitte
+                name: Boiler Mitte
+                color: orange
+              - entity: sensor.temperature_ausen
                 name: Außen
                 color: gray
 
@@ -94,37 +97,28 @@ views:
         title: Alle Temperaturen
         show_header_toggle: false
         entities:
-          - entity: sensor.temperature_aussen
+          - entity: sensor.temperature_ausen
             name: Außen
             icon: mdi:thermometer
-          - entity: sensor.temperature_kessel
-            name: Kessel
+          - entity: sensor.temperature_holzkessel
+            name: Holzkessel
             icon: mdi:fire
           - entity: sensor.temperature_vorlauf
             name: Vorlauf
             icon: mdi:pipe
-          - entity: sensor.temperature_ruecklauf
-            name: Rücklauf
-            icon: mdi:pipe-wrench
-          - entity: sensor.temperature_puffer_oben
-            name: Puffer Oben
-            icon: mdi:water-thermometer
-          - entity: sensor.temperature_puffer_unten
-            name: Puffer Unten
-            icon: mdi:water-thermometer
-          - entity: sensor.temperature_boiler_oben
-            name: Boiler Oben
-            icon: mdi:water-boiler
           - entity: sensor.temperature_boiler_unten
             name: Boiler Unten
+            icon: mdi:water-boiler
+          - entity: sensor.temperature_boiler_mitte
+            name: Boiler Mitte
             icon: mdi:water-boiler
 
       # Statistics
       - type: statistics-graph
         title: Wochen-Statistik
         entities:
-          - sensor.temperature_kessel
-          - sensor.temperature_aussen
+          - sensor.temperature_holzkessel
+          - sensor.temperature_ausen
         period:
           calendar:
             period: day
@@ -143,20 +137,20 @@ views:
           **Temperatur-Alarme:**
           ```yaml
           automation:
-            - alias: "Kessel zu heiß"
+            - alias: "Holzkessel zu heiß"
               trigger:
                 platform: numeric_state
-                entity_id: sensor.temperature_kessel
+                entity_id: sensor.temperature_holzkessel
                 above: 85
               action:
                 service: notify.mobile_app
                 data:
-                  message: "⚠️ Kessel zu heiß: {{ states('sensor.temperature_kessel') }}°C"
+                  message: "⚠️ Holzkessel zu heiß: {{ states('sensor.temperature_holzkessel') }}°C"
           
             - alias: "Außentemperatur gefallen"
               trigger:
                 platform: numeric_state
-                entity_id: sensor.temperature_aussen
+                entity_id: sensor.temperature_ausen
                 below: 5
               action:
                 service: climate.set_temperature
@@ -171,11 +165,11 @@ views:
             - alias: "Heizung bei Kessel-Temperatur einschalten"
               trigger:
                 platform: numeric_state
-                entity_id: sensor.temperature_kessel
+                entity_id: sensor.temperature_holzkessel
                 above: 60
               condition:
                 condition: numeric_state
-                entity_id: sensor.temperature_aussen
+                entity_id: sensor.temperature_ausen
                 below: 15
               action:
                 service: homeassistant.turn_on

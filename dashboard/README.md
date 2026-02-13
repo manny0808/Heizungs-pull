@@ -21,19 +21,23 @@ cards:
         name: Keller
       - entity: binary_sensor.heizung_dachwohnung
         name: Dachwohnung
+      - entity: binary_sensor.pumpe_heizung
+        name: Heizung
       - entity: binary_sensor.pumpe_holzkessel
         name: Holzkessel
   - type: entities
     title: Temperaturen
     entities:
-      - entity: sensor.temperature_aussen
+      - entity: sensor.temperature_ausen
         name: Außen
-      - entity: sensor.temperature_kessel
-        name: Kessel
+      - entity: sensor.temperature_holzkessel
+        name: Holzkessel
       - entity: sensor.temperature_vorlauf
         name: Vorlauf
-      - entity: sensor.temperature_ruecklauf
-        name: Rücklauf
+      - entity: sensor.temperature_boiler_mitte
+        name: Boiler Mitte
+      - entity: sensor.temperature_boiler_unten
+        name: Boiler Unten
 ```
 
 ### 2. Heating Control Panel
