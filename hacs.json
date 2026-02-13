@@ -2,5 +2,6 @@
   "name": "Heizungs Pull",
   "render_readme": true,
   "homeassistant": "2024.1.0",
-  "country": "DE"
+  "country": "DE",
+  "content_in_root": false
 }
