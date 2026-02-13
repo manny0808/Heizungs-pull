@@ -58,7 +58,7 @@ views:
         cards:
           - type: custom:mushroom-template-card
             primary: Kessel
-            secondary: "{{ states('sensor.temp_kessel') }}°C"
+            secondary: "{{ states('sensor.temperature_kessel') }}°C"
             icon: mdi:fire
             icon_color: |
               [[[
@@ -67,28 +67,28 @@ views:
                 if (temp > 60) return 'orange';
                 return 'green';
               ]]]
-            entity: sensor.temp_kessel
+            entity: sensor.temperature_kessel
             layout: vertical
             fill_container: true
           - type: custom:mushroom-template-card
             primary: Vorlauf
-            secondary: "{{ states('sensor.temp_vorlauf') }}°C"
+            secondary: "{{ states('sensor.temperature_vorlauf') }}°C"
             icon: mdi:arrow-up-bold
             icon_color: blue
-            entity: sensor.temp_vorlauf
+            entity: sensor.temperature_vorlauf
             layout: vertical
             fill_container: true
           - type: custom:mushroom-template-card
             primary: Rücklauf
-            secondary: "{{ states('sensor.temp_ruecklauf') }}°C"
+            secondary: "{{ states('sensor.temperature_ruecklauf') }}°C"
             icon: mdi:arrow-down-bold
             icon_color: green
-            entity: sensor.temp_ruecklauf
+            entity: sensor.temperature_ruecklauf
             layout: vertical
             fill_container: true
           - type: custom:mushroom-template-card
             primary: Außen
-            secondary: "{{ states('sensor.temp_aussen') }}°C"
+            secondary: "{{ states('sensor.temperature_aussen') }}°C"
             icon: mdi:thermometer
             icon_color: |
               [[[
@@ -97,7 +97,7 @@ views:
                 if (temp > 25) return 'red';
                 return 'gray';
               ]]]
-            entity: sensor.temp_aussen
+            entity: sensor.temperature_aussen
             layout: vertical
             fill_container: true
 
@@ -113,7 +113,7 @@ views:
           stroke_width: 3
           opacity: 0.8
         series:
-          - entity: sensor.temp_kessel
+          - entity: sensor.temperature_kessel
             name: Kessel
             color: '#ff6b00'
             type: line
@@ -121,7 +121,7 @@ views:
             group_by:
               func: avg
               duration: 5min
-          - entity: sensor.temp_vorlauf
+          - entity: sensor.temperature_vorlauf
             name: Vorlauf
             color: '#2196f3'
             type: line
@@ -129,7 +129,7 @@ views:
             group_by:
               func: avg
               duration: 5min
-          - entity: sensor.temp_ruecklauf
+          - entity: sensor.temperature_ruecklauf
             name: Rücklauf
             color: '#4caf50'
             type: line

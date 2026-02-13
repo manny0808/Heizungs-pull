@@ -26,13 +26,13 @@ cards:
   - type: entities
     title: Temperaturen
     entities:
-      - entity: sensor.temp_aussen
+      - entity: sensor.temperature_aussen
         name: Außen
-      - entity: sensor.temp_kessel
+      - entity: sensor.temperature_kessel
         name: Kessel
-      - entity: sensor.temp_vorlauf
+      - entity: sensor.temperature_vorlauf
         name: Vorlauf
-      - entity: sensor.temp_ruecklauf
+      - entity: sensor.temperature_ruecklauf
         name: Rücklauf
 ```
 
