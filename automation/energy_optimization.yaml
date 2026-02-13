@@ -1,0 +1,92 @@
+# Energy Optimization Automations
+# Copy to your Home Assistant automations
+
+automation:
+  - alias: "Nacht-Absenkung"
+    description: "Reduce heating during night hours"
+    trigger:
+      platform: time
+      at: "22:00:00"
+    action:
+      - service: climate.set_temperature
+        entity_id: climate.wohnzimmer
+        data:
+          temperature: 18
+      - service: climate.set_temperature
+        entity_id: climate.schlafzimmer
+        data:
+          temperature: 16
+      - service: notify.mobile_app
+        data:
+          title: "🌙 Nacht-Absenkung aktiv"
+          message: "Heizung auf Nachttemperatur gesenkt"
+
+  - alias: "Morgen-Aufheizung"
+    description: "Increase heating in the morning"
+    trigger:
+      platform: time
+      at: "06:00:00"
+    condition:
+      condition: numeric_state
+      entity_id: sensor.temperature_ausen
+      below: 15
+    action:
+      - service: climate.set_temperature
+        entity_id: climate.wohnzimmer
+        data:
+          temperature: 21
+      - service: climate.set_temperature
+        entity_id: climate.schlafzimmer
+        data:
+          temperature: 18
+      - service: notify.mobile_app
+        data:
+          title: "☀️ Morgen-Aufheizung"
+          message: "Heizung auf Tagestemperatur erhöht"
+
+  - alias: "Wochenende Heizungsplan"
+    description: "Different heating schedule for weekends"
+    trigger:
+      platform: time
+      at: "08:00:00"
+    condition:
+      condition: time
+      weekday:
+        - sat
+        - sun
+    action:
+      - service: climate.set_temperature
+        entity_id: climate.wohnzimmer
+        data:
+          temperature: 20
+      - service: climate.set_temperature
+        entity_id: climate.schlafzimmer
+        data:
+          temperature: 17
+
+  - alias: "Urlaubsmodus"
+    description: "Minimal heating when away"
+    mode: single
+    trigger:
+      - platform: state
+        entity_id: input_boolean.urlaubsmodus
+        to: "on"
+    action:
+      - service: climate.set_temperature
+        entity_id: climate.wohnzimmer
+        data:
+          temperature: 16
+      - service: climate.set_temperature
+        entity_id: climate.schlafzimmer
+        data:
+          temperature: 14
+      - service: homeassistant.turn_off
+        entity_id: sensor.heizung_parterre
+      - service: homeassistant.turn_off
+        entity_id: sensor.heizung_keller
+      - service: homeassistant.turn_off
+        entity_id: sensor.heizung_dachwohnung
+      - service: notify.mobile_app
+        data:
+          title: "🏖️ Urlaubsmodus aktiv"
+          message: "Heizung auf Minimalbetrieb gesetzt"

@@ -1,0 +1,52 @@
+# Temperature Alarms for Heizungs System
+# Copy to your Home Assistant automations
+
+automation:
+  - alias: "Holzkessel zu heiß Alarm"
+    description: "Send notification when wood boiler temperature is too high"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.temperature_holzkessel
+      above: 85
+    action:
+      - service: notify.mobile_app
+        data:
+          title: "⚠️ Holzkessel zu heiß"
+          message: "Holzkessel Temperatur: {{ states('sensor.temperature_holzkessel') }}°C"
+      - service: persistent_notification.create
+        data:
+          title: "Holzkessel Alarm"
+          message: "Temperatur zu hoch: {{ states('sensor.temperature_holzkessel') }}°C"
+          notification_id: "holzkessel_alarm"
+
+  - alias: "Außentemperatur gefallen"
+    description: "Adjust heating when outside temperature drops"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.temperature_ausen
+      below: 5
+    action:
+      - service: climate.set_temperature
+        entity_id: climate.wohnzimmer
+        data:
+          temperature: 21
+      - service: climate.set_temperature
+        entity_id: climate.schlafzimmer
+        data:
+          temperature: 18
+
+  - alias: "Boiler Temperatur niedrig"
+    description: "Alert when boiler temperature is too low"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.temperature_boiler_mitte
+      below: 40
+    condition:
+      condition: time
+      after: "06:00:00"
+      before: "22:00:00"
+    action:
+      service: notify.mobile_app
+      data:
+        title: "⚠️ Boiler Temperatur niedrig"
+        message: "Boiler Mitte: {{ states('sensor.temperature_boiler_mitte') }}°C"

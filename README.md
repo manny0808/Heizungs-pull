@@ -4,76 +4,56 @@
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 
-## Features
-- **Dynamic detection** of all actors and temperatures from data.php
-- **No static configuration** - automatically adapts to your data.php
-- **Complete dashboard templates** included (Standard + Mushroom Cards)
-- **Automatic updates** every 2 minutes
-- **Professional Material Design icons**
-- **HACS ready** with version support
+A dynamic Home Assistant integration that automatically discovers all sensors and actors from a Siemens Logo PLC with Logo monitoring software's `data.php` interface. No configuration needed - just point it to your `data.php` URL!
 
-## Installation
+## ✨ Features
 
-### Via HACS (recommended)
-1. Open **HACS → Integrations**
-2. Click the three dots (⋮) → **Custom repositories**
-3. Add repository URL: `https://github.com/manny0808/Heizungs-pull`
-4. Category: **Integration**
-5. Click **"Install"**
+- **Dynamic Discovery**: Automatically detects all temperature sensors and actors from `data.php`
+- **No Configuration**: Zero configuration needed after initial setup
+- **Real-time Updates**: Polls the PLC every 30 seconds (configurable)
+- **HACS Compatible**: Easy installation via HACS
+- **Complete Dashboard**: Ready-to-use Lovelace dashboard templates
+- **Automation Ready**: Pre-built automations for heating control
+
+## 📋 Requirements
+
+- Home Assistant 2023.8 or newer
+- Siemens Logo PLC with Logo monitoring software
+- `data.php` endpoint accessible from Home Assistant
+- HACS (recommended for easy installation)
+
+## 🔧 Installation
+
+### Via HACS (Recommended)
+
+1. Open HACS → Integrations
+2. Click "⋮" (three dots) → "Custom repositories"
+3. Add repository: `https://github.com/manny0808/Heizungs-pull`
+4. Select category: "Integration"
+5. Click "Install"
 6. Restart Home Assistant
 
 ### Manual Installation
+
 1. Copy the `custom_components/heizungs_pull` folder to your Home Assistant `custom_components` directory
 2. Restart Home Assistant
 
-## Configuration
+## ⚙️ Configuration
+
 1. Go to **Settings → Devices & Services**
-2. Click **+ Add Integration**
-3. Search for **Heizungs Pull**
-4. Enter the URL of your data.php (e.g., `http://heizung.lan.brunner-it.com/data.php`)
-5. Click **Submit**
+2. Click **"Add Integration"**
+3. Search for **"Heizungs Pull"**
+4. Enter your `data.php` URL (e.g., `http://heizung.lan.brunner-it.com/data.php`)
+5. Click **"Submit"**
 
-**That's it!** The integration will automatically detect all actors and temperatures from your data.php.
+The integration will automatically discover all available sensors and actors.
 
-## Dynamic Detection
+## 📊 Dashboard Templates
 
-### How it works
-The integration **dynamically detects** all sensors from your data.php:
-- **All `Temp_*` values** become temperature sensors
-- **All `*@-1@` or `*@0@` patterns** become binary sensors (actors)
-- **No static lists** - works with any Siemens controller using this format
+Complete dashboard examples are available in the `dashboard/` folder:
 
-### Example data.php format
-```
-14:30:45
-Temp_Kessel 45,2
-Temp_Vorlauf 38,5
-Temp_Ausen -2,25
-Heizung Parterre@-1@
-Heizung Keller@0@
-Pumpe Holzkessel@-1@
-```
-
-### Entity naming
-- Temperatures: `sensor.temperature_{name_lowercase}` (e.g., `sensor.temperature_kessel`)
-- Actor status: `sensor.{name_lowercase_with_underscores}` (e.g., `sensor.heizung_parterre`)
-
-## Dashboard Templates
-
-### Standard Dashboard
-`dashboard/heizung_dashboard.yaml` - Complete heating dashboard with:
-- Status overview (binary sensors)
-- Temperature gauges
-- History graphs (24h)
-- Weekly statistics
-- Automation examples
-
-### Modern UI with Mushroom Cards
-`dashboard/mushroom_cards.yaml` - Modern dashboard using Mushroom Cards:
-- Clean, card-based layout
-- Color-coded temperature cards
-- ApexCharts graphs
-- Responsive design
+- **`heizung_dashboard.yaml`** - Complete Lovelace dashboard with all sensors
+- **`mushroom_cards.yaml`** - Modern UI using Mushroom Cards (requires HACS)
 
 ### Quick Dashboard Example
 ```yaml
@@ -99,12 +79,22 @@ cards:
         name: Vorlauf
 ```
 
-## Automation Examples
+## 🤖 Automation Examples
 
-### Temperature Alerts
+Ready-to-use automations are available in the `automation/` folder:
+
+- **`temperature_alarms.yaml`** - Temperature monitoring and alerts
+- **`heating_logic.yaml`** - Heating control logic  
+- **`energy_optimization.yaml`** - Energy saving automations
+
+Copy these files to your Home Assistant `automations/` folder or include them in your `automation.yaml`.
+
+### Quick Examples
+
+**Temperature Alert:**
 ```yaml
 automation:
-  - alias: "Boiler too hot"
+  - alias: "Holzkessel zu heiß"
     trigger:
       platform: numeric_state
       entity_id: sensor.temperature_holzkessel
@@ -112,13 +102,13 @@ automation:
     action:
       service: notify.mobile_app
       data:
-        message: "⚠️ Boiler too hot: {{ states('sensor.temperature_holzkessel') }}°C"
+        message: "⚠️ Holzkessel zu heiß: {{ states('sensor.temperature_holzkessel') }}°C"
 ```
 
-### Heating Logic
+**Heating Control:**
 ```yaml
 automation:
-  - alias: "Turn on heating when boiler is hot and outside is cold"
+  - alias: "Heizung bei Kessel-Temperatur"
     trigger:
       platform: numeric_state
       entity_id: sensor.temperature_holzkessel
@@ -132,50 +122,48 @@ automation:
       entity_id: sensor.heizung_parterre
 ```
 
-## For Developers
+## 🏗️ Architecture
 
-### Project Structure
+### Entity naming
+- Temperatures: `sensor.temperature_{name_lowercase}` (e.g., `sensor.temperature_kessel`)
+- Actor status: `sensor.{name_lowercase_with_underscores}` (e.g., `sensor.heizung_parterre`)
+
+### Data Flow
 ```
-custom_components/heizungs_pull/
-├── __init__.py          # Main integration
-├── config_flow.py       # Configuration UI
-├── const.py             # Constants
-├── coordinator.py       # Data update coordinator
-├── manifest.json        # Integration metadata (v1.0.0)
-├── parser.py            # Generic parser for data.php format
-├── sensor.py            # Dynamic sensor creation
-└── entity.py            # Base entity class
+Siemens Logo PLC → data.php → Heizungs Pull → Home Assistant
+                    (JSON)        (Integration)    (Entities)
 ```
 
-### Testing the Parser
-```python
-from custom_components.heizungs_pull.parser import parse_heizung_data
+## 🔍 Troubleshooting
 
-raw_data = """14:30:45
-Temp_Kessel 45,2
-Temp_Vorlauf 38,5
-Heizung Parterre@-1@
-Heizung Keller@0@"""
+### Common Issues
 
-parsed = parse_heizung_data(raw_data)
-print(parsed)
-# Output: {'actors': {'Heizung Parterre': 'on', 'Heizung Keller': 'off'},
-#          'temperatures': {'kessel': 45.2, 'vorlauf': 38.5},
-#          'timestamp': '14:30:45'}
+1. **"Unable to connect"**: Check network connectivity to your PLC
+2. **"No entities discovered"**: Verify `data.php` returns valid data
+3. **Entities not updating**: Check polling interval in integration settings
+
+### Debug Logging
+
+Add to `configuration.yaml`:
+```yaml
+logger:
+  default: info
+  logs:
+    custom_components.heizungs_pull: debug
 ```
 
-## Changelog
+## 🤝 Contributing
 
-### v1.0.0
-- First stable release
-- Dynamic detection of all actors and temperatures
-- Complete dashboard templates
-- Professional Material Design icons
-- HACS support with versioning
+Contributions are welcome! Please:
 
-## Support
-- **GitHub Issues:** [Report bugs or request features](https://github.com/manny0808/Heizungs-pull/issues)
-- **Compatible with:** Any Siemens controller using the data.php format
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request
 
-## License
+## 📄 License
+
 MIT License - see LICENSE file for details.
+
+## ⚠️ Disclaimer
+
+This integration is not affiliated with or endorsed by Siemens. Use at your own risk.

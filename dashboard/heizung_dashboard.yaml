@@ -129,49 +129,14 @@ views:
           - max
         chart_type: line
 
-      # Automation Suggestions
+      # Automation Examples
       - type: markdown
         content: |
           ## 💡 Automatisierungs-Ideen
           
-          **Temperatur-Alarme:**
-          ```yaml
-          automation:
-            - alias: "Holzkessel zu heiß"
-              trigger:
-                platform: numeric_state
-                entity_id: sensor.temperature_holzkessel
-                above: 85
-              action:
-                service: notify.mobile_app
-                data:
-                  message: "⚠️ Holzkessel zu heiß: {{ states('sensor.temperature_holzkessel') }}°C"
+          **Beispiele findest du in der Dokumentation:**
+          - [Temperatur-Alarme](https://github.com/manny0808/Heizungs-pull#temperatur-alarme)
+          - [Heizungs-Logik](https://github.com/manny0808/Heizungs-pull#heizungs-logik)
+          - [Energie-Optimierung](https://github.com/manny0808/Heizungs-pull#energie-optimierung)
           
-            - alias: "Außentemperatur gefallen"
-              trigger:
-                platform: numeric_state
-                entity_id: sensor.temperature_ausen
-                below: 5
-              action:
-                service: climate.set_temperature
-                entity_id: climate.wohnzimmer
-                data:
-                  temperature: 21
-          ```
-          
-          **Heizungs-Logik:**
-          ```yaml
-          automation:
-            - alias: "Heizung bei Kessel-Temperatur einschalten"
-              trigger:
-                platform: numeric_state
-                entity_id: sensor.temperature_holzkessel
-                above: 60
-              condition:
-                condition: numeric_state
-                entity_id: sensor.temperature_ausen
-                below: 15
-              action:
-                service: homeassistant.turn_on
-                entity_id: sensor.heizung_parterre
-          ```
+          **Kopiere die Beispiele in deine `automation.yaml` oder separate Automatisierungsdateien.**

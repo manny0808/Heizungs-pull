@@ -1,0 +1,70 @@
+# Heating Logic Automations
+# Copy to your Home Assistant automations
+
+automation:
+  - alias: "Heizung bei Kessel-Temperatur einschalten"
+    description: "Turn on heating when wood boiler is hot enough and outside is cold"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.temperature_holzkessel
+      above: 60
+    condition:
+      - condition: numeric_state
+        entity_id: sensor.temperature_ausen
+        below: 15
+      - condition: state
+        entity_id: sensor.heizung_parterre
+        state: "off"
+    action:
+      - service: homeassistant.turn_on
+        entity_id: sensor.heizung_parterre
+      - service: notify.mobile_app
+        data:
+          title: "🔥 Heizung aktiviert"
+          message: "Holzkessel: {{ states('sensor.temperature_holzkessel') }}°C, Außen: {{ states('sensor.temperature_ausen') }}°C"
+
+  - alias: "Heizung ausschalten bei warmem Wetter"
+    description: "Turn off heating when outside temperature is warm"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.temperature_ausen
+      above: 18
+    condition:
+      condition: state
+      entity_id: sensor.heizung_parterre
+      state: "on"
+    action:
+      - service: homeassistant.turn_off
+        entity_id: sensor.heizung_parterre
+      - service: notify.mobile_app
+        data:
+          title: "🌡️ Heizung deaktiviert"
+          message: "Außentemperatur zu hoch: {{ states('sensor.temperature_ausen') }}°C"
+
+  - alias: "Pumpe bei Holzkessel Temperatur"
+    description: "Activate circulation pump when wood boiler reaches temperature"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.temperature_holzkessel
+      above: 50
+    condition:
+      condition: state
+      entity_id: sensor.pumpe_holzkessel
+      state: "off"
+    action:
+      service: homeassistant.turn_on
+      entity_id: sensor.pumpe_holzkessel
+
+  - alias: "Pumpe ausschalten bei niedriger Temperatur"
+    description: "Turn off pump when wood boiler cools down"
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.temperature_holzkessel
+      below: 40
+    condition:
+      condition: state
+      entity_id: sensor.pumpe_holzkessel
+      state: "on"
+    action:
+      service: homeassistant.turn_off
+        entity_id: sensor.pumpe_holzkessel
