@@ -1,7 +1,6 @@
 {
-  "name": "Heizungs Pull Integration",
+  "name": "Heizungs Pull",
   "render_readme": true,
-  "domains": ["sensor"],
   "homeassistant": "2024.1.0",
-  "iot_class": "local_polling"
+  "hide_default_branch": true
 }
