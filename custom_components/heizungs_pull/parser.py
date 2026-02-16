@@ -80,5 +80,5 @@ def filter_known_actors(parsed_data: Dict[str, Any], known_actors: list) -> Dict
     return {
         "actors": parsed_data.get("actors", {}),
         "temperatures": parsed_data.get("temperatures", {}),
-        "timestamp": parsed_data.get("timestamp")
+        "timestamp": parsed_data.get("timestamp")  # Can be None if not in data
     }

@@ -38,13 +38,20 @@ class HeizungsDataUpdateCoordinator(DataUpdateCoordinator):
         Returns:
             Parsed data dictionary
         """
+        _LOGGER.debug("Fetching data from endpoint")
         raw_data = await self.client.async_get_data()
         
         if raw_data is None:
+            _LOGGER.error("Failed to fetch data from Heizungs endpoint")
             raise UpdateFailed("Failed to fetch data from Heizungs endpoint")
+        
+        _LOGGER.debug("Raw data received (first 100 chars): %s", raw_data[:100])
         
         try:
             parsed_data = parse_heizung_data(raw_data)
+            _LOGGER.debug("Parsed data keys: %s", list(parsed_data.keys()))
+            _LOGGER.debug("Parsed timestamp: %s", parsed_data.get('timestamp'))
+            
             # Filter to only known actors
             filtered_data = filter_known_actors(parsed_data, ACTOR_NAMES)
             

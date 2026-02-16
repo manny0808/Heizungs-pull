@@ -2,6 +2,7 @@
 
 import logging
 from typing import Optional
+from datetime import datetime
 
 from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
@@ -43,8 +44,11 @@ async def async_setup_entry(
         for temp_name in coordinator.data["temperatures"].keys():
             entities.append(HeizungsTemperatureSensor(coordinator, temp_name))
     
-    # Create timestamp sensor
-    entities.append(HeizungsTimestampSensor(coordinator))
+    # Create timestamp sensor (only if we have data)
+    if coordinator.data:
+        entities.append(HeizungsTimestampSensor(coordinator))
+    else:
+        _LOGGER.warning("Cannot create timestamp sensor: no coordinator data after first refresh")
     
     async_add_entities(entities)
 
@@ -125,26 +129,29 @@ class HeizungsTimestampSensor(HeizungsEntity, SensorEntity):
         self._attr_unique_id = f"{coordinator.config_entry.entry_id}_timestamp"
     
     @property
-    def native_value(self) -> Optional[StateType]:
-        """Return the timestamp value."""
+    def native_value(self) -> Optional[datetime]:
+        """Return the timestamp value as datetime object."""
         _LOGGER.debug("Timestamp sensor native_value called")
         
         if not self.coordinator.data:
             _LOGGER.warning("No coordinator data available")
-            return "No data"
+            return None
         
         _LOGGER.debug("Coordinator data keys: %s", list(self.coordinator.data.keys()))
         
         timestamp = self.coordinator.data.get("timestamp")
+        if timestamp is None:
+            _LOGGER.warning("Timestamp is None in coordinator data")
+            return None
         if not timestamp:
-            _LOGGER.warning("No timestamp in coordinator data")
-            return "No timestamp"
+            _LOGGER.warning("Timestamp is empty in coordinator data: %s", timestamp)
+            return None
         
         _LOGGER.debug("Raw timestamp: %s", timestamp)
         
-        # Convert HH:MM:SS to ISO format for Home Assistant
+        # Convert HH:MM:SS to datetime object for Home Assistant
         # We'll use today's date with the time from data.php
-        from datetime import datetime, date
+        from datetime import datetime, date, timezone
         try:
             # Parse time string
             time_parts = timestamp.split(':')
@@ -152,15 +159,17 @@ class HeizungsTimestampSensor(HeizungsEntity, SensorEntity):
                 hours, minutes, seconds = map(int, time_parts)
                 # Create datetime with today's date
                 today = date.today()
+                # Create naive datetime (no timezone)
                 dt = datetime(today.year, today.month, today.day, hours, minutes, seconds)
-                iso_time = dt.isoformat()
-                _LOGGER.debug("Converted to ISO: %s", iso_time)
-                return iso_time
+                # Make it timezone-aware (UTC)
+                dt_utc = dt.replace(tzinfo=timezone.utc)
+                _LOGGER.debug("Converted to datetime: %s", dt_utc)
+                return dt_utc
         except (ValueError, AttributeError) as e:
             _LOGGER.warning("Failed to parse timestamp %s: %s", timestamp, e)
         
-        _LOGGER.debug("Returning raw timestamp: %s", timestamp)
-        return timestamp
+        _LOGGER.debug("Failed to convert timestamp, returning None")
+        return None
     
     @property
     def available(self) -> bool:
