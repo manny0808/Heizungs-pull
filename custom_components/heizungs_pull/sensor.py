@@ -127,12 +127,20 @@ class HeizungsTimestampSensor(HeizungsEntity, SensorEntity):
     @property
     def native_value(self) -> Optional[StateType]:
         """Return the timestamp value."""
+        _LOGGER.debug("Timestamp sensor native_value called")
+        
         if not self.coordinator.data:
+            _LOGGER.warning("No coordinator data available")
             return "No data"
+        
+        _LOGGER.debug("Coordinator data keys: %s", list(self.coordinator.data.keys()))
         
         timestamp = self.coordinator.data.get("timestamp")
         if not timestamp:
+            _LOGGER.warning("No timestamp in coordinator data")
             return "No timestamp"
+        
+        _LOGGER.debug("Raw timestamp: %s", timestamp)
         
         # Convert HH:MM:SS to ISO format for Home Assistant
         # We'll use today's date with the time from data.php
@@ -145,10 +153,13 @@ class HeizungsTimestampSensor(HeizungsEntity, SensorEntity):
                 # Create datetime with today's date
                 today = date.today()
                 dt = datetime(today.year, today.month, today.day, hours, minutes, seconds)
-                return dt.isoformat()
-        except (ValueError, AttributeError):
-            pass
+                iso_time = dt.isoformat()
+                _LOGGER.debug("Converted to ISO: %s", iso_time)
+                return iso_time
+        except (ValueError, AttributeError) as e:
+            _LOGGER.warning("Failed to parse timestamp %s: %s", timestamp, e)
         
+        _LOGGER.debug("Returning raw timestamp: %s", timestamp)
         return timestamp
     
     @property
