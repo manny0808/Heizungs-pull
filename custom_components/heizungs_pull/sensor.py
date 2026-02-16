@@ -127,12 +127,12 @@ class HeizungsTimestampSensor(HeizungsEntity, SensorEntity):
     @property
     def native_value(self) -> Optional[StateType]:
         """Return the timestamp value."""
-        if not self.coordinator.data or "timestamp" not in self.coordinator.data:
-            return None
+        if not self.coordinator.data:
+            return "No data"
         
         timestamp = self.coordinator.data.get("timestamp")
         if not timestamp:
-            return None
+            return "No timestamp"
         
         # Convert HH:MM:SS to ISO format for Home Assistant
         # We'll use today's date with the time from data.php
@@ -157,6 +157,4 @@ class HeizungsTimestampSensor(HeizungsEntity, SensorEntity):
         return (
             super().available
             and self.coordinator.data
-            and "timestamp" in self.coordinator.data
-            and self.coordinator.data["timestamp"] is not None
         )
