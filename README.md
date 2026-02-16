@@ -19,6 +19,7 @@ A dynamic Home Assistant integration that automatically discovers all sensors an
 - **Dynamic Discovery**: Automatically detects all temperature sensors and actors from `data.php`
 - **No Configuration**: Zero configuration needed after initial setup
 - **Real-time Updates**: Polls the PLC every 30 seconds (configurable)
+- **Sync Timestamp**: Includes timestamp sensor showing last data synchronization time
 - **HACS Compatible**: Easy installation via HACS
 - **Complete Dashboard**: Ready-to-use Lovelace dashboard templates
 - **Automation Ready**: Pre-built automations for heating control
@@ -135,6 +136,7 @@ automation:
 ### Entity naming
 - Temperatures: `sensor.temperature_{name_lowercase}` (e.g., `sensor.temperature_kessel`)
 - Actor status: `sensor.{name_lowercase_with_underscores}` (e.g., `sensor.heizung_parterre`)
+- Sync timestamp: `sensor.heizungs_data_timestamp` (shows last data synchronization time)
 
 ### Data Flow
 ```

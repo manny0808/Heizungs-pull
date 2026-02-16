@@ -15,6 +15,7 @@
 ## Features
 - **Dynamic detection** of all actors and temperatures from data.php
 - **No static configuration** - automatically adapts to your data.php
+- **Sync timestamp** - shows last data synchronization time
 - **Complete dashboard templates** included (Standard + Mushroom Cards)
 - **Automatic updates** every 2 minutes
 - **Professional Material Design icons**
@@ -45,6 +46,7 @@ The integration **dynamically detects** all sensors from your data.php:
 ### Entity naming
 - Temperatures: `sensor.temperature_{name_lowercase}` (e.g., `sensor.temperature_kessel`)
 - Binary sensors: `binary_sensor.{name_lowercase_with_underscores}` (e.g., `binary_sensor.heizung_parterre`)
+- Sync timestamp: `sensor.heizungs_data_timestamp` (shows last data synchronization time)
 
 ## Dashboard Templates
 The repository contains complete dashboard templates:

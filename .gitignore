@@ -50,3 +50,6 @@ env/
 
 # Our temporary work directory
 .workdir/
+
+# Generated icons folder
+brands_icons/

@@ -43,6 +43,9 @@ async def async_setup_entry(
         for temp_name in coordinator.data["temperatures"].keys():
             entities.append(HeizungsTemperatureSensor(coordinator, temp_name))
     
+    # Create timestamp sensor
+    entities.append(HeizungsTimestampSensor(coordinator))
+    
     async_add_entities(entities)
 
 
@@ -107,4 +110,53 @@ class HeizungsTemperatureSensor(HeizungsEntity, SensorEntity):
             and self.coordinator.data
             and "temperatures" in self.coordinator.data
             and self._temp_name in self.coordinator.data["temperatures"]
+        )
+
+
+class HeizungsTimestampSensor(HeizungsEntity, SensorEntity):
+    """Timestamp sensor for Heizungs data synchronization."""
+    
+    _attr_device_class = SensorDeviceClass.TIMESTAMP
+    _attr_name = "Heizungs Data Timestamp"
+    
+    def __init__(self, coordinator: HeizungsDataUpdateCoordinator):
+        """Initialize the timestamp sensor."""
+        super().__init__(coordinator)
+        self._attr_unique_id = f"{coordinator.config_entry.entry_id}_timestamp"
+    
+    @property
+    def native_value(self) -> Optional[StateType]:
+        """Return the timestamp value."""
+        if not self.coordinator.data or "timestamp" not in self.coordinator.data:
+            return None
+        
+        timestamp = self.coordinator.data.get("timestamp")
+        if not timestamp:
+            return None
+        
+        # Convert HH:MM:SS to ISO format for Home Assistant
+        # We'll use today's date with the time from data.php
+        from datetime import datetime, date
+        try:
+            # Parse time string
+            time_parts = timestamp.split(':')
+            if len(time_parts) == 3:
+                hours, minutes, seconds = map(int, time_parts)
+                # Create datetime with today's date
+                today = date.today()
+                dt = datetime(today.year, today.month, today.day, hours, minutes, seconds)
+                return dt.isoformat()
+        except (ValueError, AttributeError):
+            pass
+        
+        return timestamp
+    
+    @property
+    def available(self) -> bool:
+        """Return True if entity is available."""
+        return (
+            super().available
+            and self.coordinator.data
+            and "timestamp" in self.coordinator.data
+            and self.coordinator.data["timestamp"] is not None
         )
