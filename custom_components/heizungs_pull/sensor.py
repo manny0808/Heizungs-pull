@@ -2,7 +2,8 @@
 
 import logging
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
@@ -151,7 +152,7 @@ class HeizungsTimestampSensor(HeizungsEntity, SensorEntity):
         
         # Convert HH:MM:SS to datetime object for Home Assistant
         # We'll use today's date with the time from data.php
-        from datetime import datetime, date, timezone
+        from datetime import date
         try:
             # Parse time string
             time_parts = timestamp.split(':')
@@ -161,10 +162,10 @@ class HeizungsTimestampSensor(HeizungsEntity, SensorEntity):
                 today = date.today()
                 # Create naive datetime (no timezone)
                 dt = datetime(today.year, today.month, today.day, hours, minutes, seconds)
-                # Make it timezone-aware (UTC)
-                dt_utc = dt.replace(tzinfo=timezone.utc)
-                _LOGGER.debug("Converted to datetime: %s", dt_utc)
-                return dt_utc
+                # Make it timezone-aware (Europe/Berlin)
+                dt = dt.replace(tzinfo=ZoneInfo("Europe/Berlin"))
+                _LOGGER.debug("Converted to datetime: %s", dt)
+                return dt
         except (ValueError, AttributeError) as e:
             _LOGGER.warning("Failed to parse timestamp %s: %s", timestamp, e)
         
